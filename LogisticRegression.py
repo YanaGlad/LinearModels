@@ -47,3 +47,18 @@ class MyLogisticRegression(object):
         l2 = 2 * self.l1_coef * np.eye(wc.shape[0]) @ wc
 
         return grad + l1 + l2
+
+    def predic_proba(self, X):
+        n, k = X.shape
+        X_ = np.concatenate((np.ones((n, 1)), X), axis=1)
+        return sigmoid(logit(X_, self.w))
+
+    def predict(self, X, threhold=0.5):
+        return self.predic_proba(X) >= threhold
+
+    def get_weight(self):
+        return self.w
+
+    def __loss(self, y, p):
+        p = np.clip(p, 1e-10, 1 - 1e-10)
+        return -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))
