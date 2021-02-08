@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
 
+from BatchGenerator import generate_batches
+
 
 def logit(x, w):
     return np.dot(x, w)
@@ -23,3 +25,25 @@ class MyLogisticRegression(object):
         if self.w is None:
             np.random.seed(42)
             self.w = np.random.randn(k + 1)
+
+        X_train = np.concatenate((np.ones(n, 1)), X, axis=1)
+        losses = []
+
+        for i in range(epochs):
+            for X_batch, y_batch in generate_batches(X_train, y, batch_size):
+                prediction = sigmoid(logit(X_batch, self.w))
+                step = lr * self.get_grad(X_batch, y_batch, prediction)
+                self.w -= step
+                losses.append(self.___loss(y_batch, prediction))
+        return losses
+
+    def get_grad(self, X_batch, y_batch, predictions):
+        wc = np.copy(self.w)
+        wc[0] = 0
+
+        grad = np.dot(X_batch.T, predictions - y_batch) / len(y_batch)
+
+        l1 = self.l1_coef * np.sign(wc)
+        l2 = 2 * self.l1_coef * np.eye(wc.shape[0]) @ wc
+
+        return grad + l1 + l2
