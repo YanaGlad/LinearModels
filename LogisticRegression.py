@@ -77,3 +77,22 @@ for i, cl in enumerate([0, 1]):
 plt.figure(figsize=(15, 10))
 plt.scatter(X[:, 0], X[:, 1], c=colored_y)
 plt.show()
+
+clf = MyLogisticRegression(0.1, 0.1)
+clf.fit(X, y, epochs=1000)
+w = clf.get_weight()
+
+from matplotlib.colors import ListedColormap
+
+plt.figure(figsize=(15, 8))
+
+eps = 0.1
+xx, yy = np.meshgrid(np.linspace(np.min(X[:, 0]) - eps, np.max(X[:, 0]) + eps, 200),
+                     np.linspace(np.min(X[:, 1]) - eps, np.max(X[:, 1]) + eps, 200))
+z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+z = z.reshape(xx.shape)
+cmap_light = ListedColormap(['#FFAAAA', '#AAFFAA'])
+plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
+
+plt.scatter(X[:, 0], X[:, 1], c=colored_y)
+plt.show()
