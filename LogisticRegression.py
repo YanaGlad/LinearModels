@@ -62,3 +62,18 @@ class MyLogisticRegression(object):
     def __loss(self, y, p):
         p = np.clip(p, 1e-10, 1 - 1e-10)
         return -np.mean(y * np.log(p) + (1 - y) * np.log(1 - p))
+
+
+from sklearn.datasets import make_blobs
+
+X, y = make_blobs(n_samples=1000, centers=[[-2, 0.5], [3, -0.5]], cluster_std=1, random_state=42)
+
+colors = ("red", "green")
+colored_y = np.zeros(y.size, dtype=str)
+
+for i, cl in enumerate([0, 1]):
+    colored_y[y == cl] = str(colors[i])
+
+plt.figure(figsize=(15, 10))
+plt.scatter(X[:, 0], X[:, 1], c=colored_y)
+plt.show()
